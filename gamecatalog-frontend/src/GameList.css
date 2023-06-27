@@ -1,0 +1,21 @@
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1em;
+  }
+  
+  .game-container {
+    border: 1px solid black;
+    padding: 1em;
+    margin: 1em;
+    transition: transform .2s;
+  }
+  
+  .game-container:hover {
+    transform: scale(1.05);
+  }
+  
+  .game-image {
+    width: 100%;
+    height: auto;
+  }

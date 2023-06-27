@@ -1,0 +1,21 @@
+.navbar {
+    display: flex;
+    justify-content: center;
+    padding: 10px;
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+  }
+  
+  .search-input {
+    width: 70%;
+    padding: 5px;
+    border-radius: 4px;
+    border: 1px solid #ced4da;
+  }
+  
+  .sort-select {
+    width: 20%;
+    padding: 5px;
+    border-radius: 4px;
+    border: 1px solid #ced4da;
+  }

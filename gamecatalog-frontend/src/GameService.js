@@ -8,7 +8,16 @@ class GameService {
         return axios.get(API_URL);
     }
 
-    // Continue with other CRUD operations...
+    updateGame(gameId, updatedFields) {
+        return axios.put(`${API_URL}/${gameId}`, updatedFields)
+            .then((response) => {
+                return response.data;
+            })
+            .catch((error) => {
+                console.log(error);
+                return Promise.reject(error);
+            });
+    }
 }
 
 export default new GameService();

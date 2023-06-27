@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import GameList from './GameList';
 import Navbar from './NavBar';
+import './App.css';
 
 function App() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -23,7 +24,11 @@ function App() {
     <div className="App">
       <h1>Game Catalog</h1>
       <Navbar onSearch={handleSearch} onSort={handleSort} onFilter={handleFilter} /> {/* updated */}
-      <GameList searchTerm={searchTerm} sortType={sortType} filterType={filterType} /> {/* updated */}
+      <GameList 
+        searchTerm={searchTerm} 
+        sortType={sortType} 
+        filterType={filterType} 
+      />
     </div>
   );
 }
