@@ -18,8 +18,8 @@ public class VideoGameCatalogApplication {
 	CommandLineRunner commandLineRunner(GameRepository gameRepository) {
 		return args -> {
 			createGameIfNotExists(gameRepository, "Super Mario Odyssey", "Platform", "Nintendo", "https://clipart-library.com/images/pcqKR4EEi.jpg", 9.6, "Sample Note");
-			createGameIfNotExists(gameRepository, "God of War", "Action-adventure", "Santa Monica Studio", "https://clipart-library.com/images/pcqKR4EEi.jpg", 9.8, "Sample Note");
-			createGameIfNotExists(gameRepository, "Final Fantasy VII Remake", "RPG", "Square Enix", "https://clipart-library.com/images/pcqKR4EEi.jpg", 8.9, "Sample Note");
+			createGameIfNotExists(gameRepository, "God of War", "Action-adventure", "Santa Monica Studio", "https://wallpapers.com/images/featured-full/god-of-war-83rush6v76r4v0ul.jpg", 9.8, "Sample Note");
+			createGameIfNotExists(gameRepository, "Final Fantasy VII Remake", "RPG", "Square Enix", "https://upload.wikimedia.org/wikipedia/en/c/ce/FFVIIRemake.png", 8.9, "Sample Note");
 			System.out.println("Sample games have been inserted successfully.");
 		};
 	}

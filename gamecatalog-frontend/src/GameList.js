@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import GameService from './GameService';
 import Modal from 'react-modal';
 import "./GameList.css";
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 Modal.setAppElement('#root')
 
@@ -21,8 +22,12 @@ function GameList({ searchTerm, sortType }) {
     setIsOpen(false);
   }
 
-  function handleUpdate() {
-    const updatedFields = { rating: newRating, notes: newNotes };
+  function handleUpdate(e) {
+    e.preventDefault(); 
+    const updatedFields = {};
+    if (newRating) updatedFields.rating = newRating;
+    if (newNotes) updatedFields.notes = newNotes;
+
     GameService.updateGame(currentGame.id, updatedFields)
       .then(() => {
         // After the game is updated and the modal is closed, refresh the game list.
@@ -75,24 +80,53 @@ function GameList({ searchTerm, sortType }) {
       </div>
     ))}
      <Modal
-        isOpen={modalIsOpen}
-        onRequestClose={closeModal}
-        contentLabel="Example Modal"
-      >
-        <h2>{currentGame?.title}</h2>
-        <button onClick={closeModal}>close</button>
-        <form>
-          <label>
-            Rating:
-            <input type="text" value={newRating} onChange={e => setNewRating(e.target.value)} />
-          </label>
-          <label>
-            Notes:
-            <input type="text" value={newNotes} onChange={e => setNewNotes(e.target.value)} />
-          </label>
-          <button onClick={handleUpdate}>Update</button>
-        </form>
-      </Modal>
+  isOpen={modalIsOpen}
+  onRequestClose={closeModal}
+  contentLabel="Update Game"
+  className="Modal"
+  overlayClassName="Overlay"
+>
+  <h2 className="text-center mb-4">{currentGame?.title}</h2>
+
+  <button 
+    onClick={closeModal} 
+    className="btn btn-secondary mb-4" 
+    style={{float: 'right'}}
+  >
+    Close
+  </button>
+
+  <form>
+    <div className="mb-3">
+      <label htmlFor="rating" className="form-label">Rating:</label>
+      <input 
+        type="text" 
+        id="rating"
+        className="form-control"
+        value={newRating} 
+        onChange={e => setNewRating(e.target.value)} 
+      />
+    </div>
+
+    <div className="mb-3">
+      <label htmlFor="notes" className="form-label">Notes:</label>
+      <textarea 
+        id="notes"
+        className="form-control"
+        value={newNotes} 
+        onChange={e => setNewNotes(e.target.value)} 
+      />
+    </div>
+
+    <button 
+      type="button" 
+      onClick={handleUpdate}
+      className="btn btn-primary"
+    >
+      Update
+    </button>
+  </form>
+</Modal>
   </div>
   );
 }

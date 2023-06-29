@@ -27,15 +27,32 @@ public class GameController {
         return gameRepository.save(game);
     }
     @PutMapping("/{id}")
-    public Game updateGame(@PathVariable Long id, @RequestBody Game gameDetails) {
-        Game game = gameRepository.findById(String.valueOf(id)).orElseThrow(() -> new NoSuchElementException("Game not found with id " + id));
+    public Game updateGame(@PathVariable String id, @RequestBody Game gameDetails) {
+        Game game = gameRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Game not found with id " + id));
 
-        game.setTitle(gameDetails.getTitle());
-        game.setDeveloper(gameDetails.getDeveloper());
-        game.setGenre(gameDetails.getGenre());
-        game.setImageUrl(gameDetails.getImageUrl());
-        game.setRating(gameDetails.getRating());
-        game.setNotes(gameDetails.getNotes());
+        if (gameDetails.getTitle() != null) {
+            game.setTitle(gameDetails.getTitle());
+        }
+
+        if (gameDetails.getDeveloper() != null) {
+            game.setDeveloper(gameDetails.getDeveloper());
+        }
+
+        if (gameDetails.getGenre() != null) {
+            game.setGenre(gameDetails.getGenre());
+        }
+
+        if (gameDetails.getImageUrl() != null) {
+            game.setImageUrl(gameDetails.getImageUrl());
+        }
+
+        if (gameDetails.getRating() != null) {
+            game.setRating(gameDetails.getRating());
+        }
+
+        if (gameDetails.getNotes() != null) {
+            game.setNotes(gameDetails.getNotes());
+        }
 
         Game updatedGame = gameRepository.save(game);
         return updatedGame;

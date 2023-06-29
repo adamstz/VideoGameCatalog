@@ -14,7 +14,7 @@ public class Game {
     private String developer;
 
     private String imageUrl; // URL to the game's image
-    private double rating; // Rating of the game
+    private Double rating; // Rating of the game
     private String notes; // Any additional notes
     public String getId() {
         return id;
@@ -56,11 +56,11 @@ public class Game {
         this.imageUrl = imageUrl;
     }
 
-    public double getRating() {
+    public Double getRating() {
         return rating;
     }
 
-    public void setRating(double rating) {
+    public void setRating(Double rating) {
         this.rating = rating;
     }
 

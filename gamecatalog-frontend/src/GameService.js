@@ -9,6 +9,7 @@ class GameService {
     }
 
     updateGame(gameId, updatedFields) {
+        console.log(gameId, updatedFields);
         return axios.put(`${API_URL}/${gameId}`, updatedFields)
             .then((response) => {
                 return response.data;
