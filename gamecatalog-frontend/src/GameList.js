@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, onGameUpdate} from 'react';
 import GameService from './GameService';
 import Modal from 'react-modal';
 import "./GameList.css";
@@ -6,8 +6,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 Modal.setAppElement('#root')
 
-function GameList({ searchTerm, sortType }) {
-  const [games, setGames] = useState([]);
+function GameList({ searchTerm, sortType, games, onGameUpdate}) {
+  //const [games, setGames] = useState([]);
   const [modalIsOpen,setIsOpen] = useState(false);
   const [currentGame, setCurrentGame] = useState(null);
   const [newRating, setNewRating] = useState("");
@@ -28,22 +28,13 @@ function GameList({ searchTerm, sortType }) {
     if (newRating) updatedFields.rating = newRating;
     if (newNotes) updatedFields.notes = newNotes;
 
-    GameService.updateGame(currentGame.id, updatedFields)
-      .then(() => {
-        // After the game is updated and the modal is closed, refresh the game list.
-        GameService.getAllGames().then((response) => {
-          setGames(response.data);
-        });
-      });
-    closeModal();
+    GameService.updateGame(currentGame.id, updatedFields).then(() => {
+      onGameUpdate();
+      closeModal();
+    });
   }
 
-  useEffect(() => {
-    GameService.getAllGames().then((response) => {
-      setGames(response.data);
-    });
-  }, []);
-
+  
   let filteredGames = games;
 
   if (searchTerm) {
@@ -65,12 +56,12 @@ function GameList({ searchTerm, sortType }) {
   return (
     <div className="grid-container">
     {filteredGames.map((game) => (
-      <div key={game.id} className="game-container">
+      <div key={game.id} className="game-container" onClick={() => openModal(game)}> 
         <img 
           src={game.imageUrl} 
           alt="Game" 
           className="game-image"
-          onClick={() => openModal(game)} // Registering click event to open modal
+           
         />
         <h2>{game.title}</h2>
         <p>Genre: {game.genre}</p>

@@ -19,6 +19,16 @@ class GameService {
                 return Promise.reject(error);
             });
     }
+    createGame(game) {
+        return axios.post(API_URL, game)
+            .then((response) => {
+                return response.data;
+            })
+            .catch((error) => {
+                console.log(error);
+                return Promise.reject(error);
+            });
+    }
 }
 
 export default new GameService();
