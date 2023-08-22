@@ -45,5 +45,6 @@ public class User {
     public void setFavoriteGames(List<String> favoriteGames) {
         this.favoriteGames = favoriteGames;
     }
+
     // ... any other methods you need
 }
