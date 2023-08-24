@@ -9,6 +9,8 @@
     padding: 1em;
     margin: 1em;
     transition: transform .2s;
+    max-width: 400px;
+    max-height: 800px;
   }
   
   .game-container:hover {

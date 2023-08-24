@@ -9,9 +9,10 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+// The @Service annotation is used to indicate that the class provides some sort of business functionality.
 @Service
 public class UserService {
-
+    // The @Autowired annotation tells Spring to inject the GameRepository bean into this class.
     @Autowired
     private UserRepository userRepository;
 

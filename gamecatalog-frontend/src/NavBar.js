@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-import { Navbar, Nav, Form, FormControl, Button, Row, Col } from 'react-bootstrap';
-//import './NavBar.css';
-
+import { Navbar, Form, FormControl, Button, Row } from 'react-bootstrap';
+import './NavBar.css';
 function NavigationBar({ onSearch, onSort, onAddGame }) {
   const [searchTerm, setSearchTerm] = useState('');
   const [sortTerm, setSortTerm] = useState('');
@@ -17,37 +16,45 @@ function NavigationBar({ onSearch, onSort, onAddGame }) {
   };
 
   return (
-    <Navbar bg="light" expand="lg">
+    <Navbar bg="light" expand="lg" className="navbar-custom">
       <Navbar.Toggle aria-controls="basic-navbar-nav" />
       <Navbar.Collapse id="basic-navbar-nav">
-        <Form className="w-100">
-          <Row noGutters>
-            <Col xs={12} sm={6} md={4}>
-              <FormControl 
+        <Form className="w-100 d-flex justify-content-center">
+          <div className="d-flex">
+            <FormControl 
                 type="text" 
-                placeholder="Search" 
-                className="mr-sm-2" 
+                placeholder="Search"
+                className="search-input"
                 value={searchTerm} 
                 onChange={handleSearch} 
-              />
-            </Col>
-            <Col xs={12} sm={4} md={3}>
-              <Form.Control 
+            />
+            <Form.Control 
                 as="select" 
+                className="sort-select"
                 value={sortTerm} 
                 onChange={handleSort}
-                className="mr-sm-2"
               >
                 <option value="">Sort by...</option>
                 <option value="title">Title</option>
                 <option value="rating">Rating</option>
               </Form.Control>
-            </Col>
-            <Col xs={12} sm={2}>
-              <Button variant="outline-success" onClick={onAddGame}>Add Game</Button>
-            </Col>
-          </Row>
+              <Button 
+                className="add-game-btn"
+                variant="outline-success" 
+                onClick={onAddGame} 
+            >
+                Add Game
+            </Button>
+          </div>
+          
         </Form>
+        
+          <Button
+              className="Sign-in-btn"
+              variant="outline-success"
+          >
+              Sign In
+          </Button>
       </Navbar.Collapse>
     </Navbar>
   );
