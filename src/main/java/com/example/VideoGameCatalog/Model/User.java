@@ -14,7 +14,7 @@ public class User {
 
     private List<String> favoriteGames;
 
-    // Constructors, getters, setters, and any other methods you need...
+
 
     public String getId() {
         return id;
@@ -46,5 +46,5 @@ public class User {
         this.favoriteGames = favoriteGames;
     }
 
-    // ... any other methods you need
+
 }

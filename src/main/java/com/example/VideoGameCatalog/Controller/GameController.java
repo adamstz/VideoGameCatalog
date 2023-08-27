@@ -1,7 +1,9 @@
 package com.example.VideoGameCatalog.Controller;
 
 import com.example.VideoGameCatalog.Model.Game;
+import com.example.VideoGameCatalog.Model.User;
 import com.example.VideoGameCatalog.Repository.GameRepository;
+import com.example.VideoGameCatalog.Repository.UserRepository;
 import org.springframework.web.bind.annotation.*;
 import java.util.NoSuchElementException;
 import java.util.List;
@@ -12,9 +14,11 @@ import java.util.List;
 public class GameController {
 
     private final GameRepository gameRepository;
+    private final UserRepository userRepository;
 
-    public GameController(GameRepository gameRepository) {
+    public GameController(GameRepository gameRepository, UserRepository userRepository) {
         this.gameRepository = gameRepository;
+        this.userRepository = userRepository;
     }
 
     @GetMapping
