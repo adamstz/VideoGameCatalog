@@ -1,15 +1,45 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Navbar, Form, FormControl, Button, Row } from 'react-bootstrap';
 import './NavBar.css';
 import Modal from 'react-modal';
 import AuthService from './AuthService';
 
+
+async function fetchCurrentUser() {
+  const token = localStorage.getItem('token'); // Assuming you store the JWT token in local storage
+  const response = await fetch('/api/user/current', {
+      headers: {
+          'Authorization': `Bearer ${token}`
+      }
+  });
+  if (response.ok) {
+      const user = await response.json();
+      // Now you have the user details
+      console.log(user);
+  } else {
+      console.error('Failed to fetch user details');
+  }
+}
+
 function NavigationBar({ onSearch, onSort, onAddGame }) {
+
   const [searchTerm, setSearchTerm] = useState('');
   const [sortTerm, setSortTerm] = useState('');
   const [signInModalIsOpen, setSignInModalIsOpen] = useState(false);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [loggedInUser, setLoggedInUser] = useState(null);
+
+  
+  useEffect(() => {
+    async function getCurrentUser() {
+        const username = await AuthService.fetchCurrentUser();
+        if (username) {
+            setLoggedInUser(username);
+        }
+    }
+    getCurrentUser();
+}, []);
 
   const handleSearch = (e) => {
     setSearchTerm(e.target.value);
@@ -28,18 +58,21 @@ function NavigationBar({ onSearch, onSort, onAddGame }) {
   const closeSignInModal = () => {
     setSignInModalIsOpen(false);
   };
-  const handleLogin = (e) => {
+  const handleLoginClick = async (e) => {
     e.preventDefault();
-    AuthService.login(username, password).then(
-        (data) => {
-            console.log(data);  // Here you can handle the returned JWT or navigate the user to a different page
-            closeSignInModal();  // Close the modal after successful login
-        },
-        (error) => {
-            console.error("Login error:", error);  // Handle login errors here
-        }
-    );
+    const data = await AuthService.login(username, password);
+    if (data && data.token) {
+        setLoggedInUser(username);
+        closeSignInModal();
+    } else {
+        console.error("Failed to login");
+    }
 };
+const handleLogout = () => {
+  AuthService.logout();  // Assuming you have a logout function in your AuthService
+  setLoggedInUser(null);
+};
+
   return (
     <Navbar bg="light" expand="lg" className="navbar-custom">
       <Navbar.Toggle aria-controls="basic-navbar-nav" />
@@ -74,13 +107,26 @@ function NavigationBar({ onSearch, onSort, onAddGame }) {
           
         </Form>
         
-          <Button
-              className="Sign-in-btn"
-              variant="outline-success"
-              onClick={openSignInModal}
-          >
-              Sign In
-          </Button>
+        {loggedInUser ? (
+    <div>
+        <span>Welcome, {loggedInUser}!</span>
+        <Button
+            className="Logout-btn"
+            variant="outline-danger"
+            onClick={handleLogout}
+        >
+            Logout
+        </Button>
+    </div>
+) : (
+    <Button
+        className="Sign-in-btn"
+        variant="outline-success"
+        onClick={openSignInModal}
+    >
+        Sign In
+    </Button>
+)}
       </Navbar.Collapse>
       <Modal
   isOpen={signInModalIsOpen}
@@ -123,7 +169,7 @@ function NavigationBar({ onSearch, onSort, onAddGame }) {
     <button 
       type="button"
       className="btn btn-primary"
-      onClick={handleLogin}
+      onClick={handleLoginClick}
     >
       Sign In
     </button>

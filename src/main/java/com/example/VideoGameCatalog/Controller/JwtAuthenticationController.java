@@ -15,16 +15,19 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import com.example.VideoGameCatalog.config.JwtTokenUtil;
 import com.example.VideoGameCatalog.Model.JwtRequest;
 import com.example.VideoGameCatalog.Model.JwtResponse;
 
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController  // Indicates that this class is a RESTful web service controller
-@CrossOrigin  // Enables cross-origin requests, useful for frontend-backend separation
 public class JwtAuthenticationController {
 
-    @Autowired  // Automatically injects the required bean
+    private static final Logger logger = LoggerFactory.getLogger(JwtAuthenticationController.class);
+
+    @Autowired
     private AuthenticationManager authenticationManager;
 
     @Autowired
@@ -33,37 +36,36 @@ public class JwtAuthenticationController {
     @Autowired
     private UserDetailsService jwtInMemoryUserDetailsService;
 
-    // Endpoint for user authentication and JWT token generation
     @RequestMapping(value = "/authenticate", method = RequestMethod.POST)
     public ResponseEntity<?> generateAuthenticationToken(@RequestBody JwtRequest authenticationRequest)
             throws Exception {
 
-        // Authenticate the user with the provided credentials
+        logger.info("Authentication request received for username: {}", authenticationRequest.getUsername());
+
         authenticate(authenticationRequest.getUsername(), authenticationRequest.getPassword());
 
-        // Load user details after successful authentication
+        logger.info("Authentication successful for username: {}", authenticationRequest.getUsername());
+
         final UserDetails userDetails = jwtInMemoryUserDetailsService
                 .loadUserByUsername(authenticationRequest.getUsername());
 
-        // Generate JWT token for the authenticated user
         final String token = jwtTokenUtil.generateToken(userDetails);
 
-        // Return the generated JWT token in the response
+        logger.info("Generated JWT token for username: {}", authenticationRequest.getUsername());
+
         return ResponseEntity.ok(new JwtResponse(token));
     }
 
-    // Method to authenticate a user using the AuthenticationManager
     private void authenticate(String username, String password) throws Exception {
         Objects.requireNonNull(username);
         Objects.requireNonNull(password);
         try {
-            // Attempt to authenticate the user with the provided credentials
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
         } catch (DisabledException e) {
-            // Handle the case where the user account is disabled
+            logger.error("User account is disabled for username: {}", username, e);
             throw new Exception("USER_DISABLED", e);
         } catch (BadCredentialsException e) {
-            // Handle the case where the provided credentials are invalid
+            logger.error("Invalid credentials provided for username: {}", username, e);
             throw new Exception("INVALID_CREDENTIALS", e);
         }
     }

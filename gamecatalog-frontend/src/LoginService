@@ -1,0 +1,20 @@
+import AuthService from './AuthService';  // Adjust the path to where your AuthService.js is located
+import axios from 'axios';
+
+const handleLogin = (username, password, setLoggedInUser, closeSignInModal) => {
+    AuthService.login(username, password).then(
+        (data) => {
+            console.log(data);  // Here you can handle the returned JWT or navigate the user to a different page
+            setLoggedInUser(username);  // Set the logged-in user's name
+            closeSignInModal();  // Close the modal after successful login
+
+            // Optionally, set the token for axios for subsequent requests
+            axios.defaults.headers.common['Authorization'] = 'Bearer ' + AuthService.getToken();
+        },
+        (error) => {
+            console.error("Login error:", error);  // Handle login errors here
+        }
+    );
+};
+
+export default handleLogin;
