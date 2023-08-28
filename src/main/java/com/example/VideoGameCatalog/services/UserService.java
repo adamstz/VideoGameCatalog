@@ -9,37 +9,43 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-// The @Service annotation is used to indicate that the class provides some sort of business functionality.
+
 @Service
 public class UserService {
-    // The @Autowired annotation tells Spring to inject the GameRepository bean into this class.
+
     @Autowired
     private UserRepository userRepository;
 
     @Autowired
     private GameRepository gameRepository;
-    public void addGameToFavorites(String userId, String gameId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
-        if(user.getFavoriteGames() == null) {
+
+    public User addGameToFavorites(String username, String gameId) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User with username " + username + " not found"));
+        if (user.getFavoriteGames() == null) {
             user.setFavoriteGames(new ArrayList<>());
         }
-        if(!user.getFavoriteGames().contains(gameId)) {
+        if (!user.getFavoriteGames().contains(gameId)) {
             user.getFavoriteGames().add(gameId);
             userRepository.save(user);
+
         }
+        return user;
     }
 
-    public void removeGameFromFavorites(String userId, String gameId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
-        if(user.getFavoriteGames() != null && user.getFavoriteGames().contains(gameId)) {
+    public void removeGameFromFavorites(String username, String gameId) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        if (user.getFavoriteGames() != null && user.getFavoriteGames().contains(gameId)) {
             user.getFavoriteGames().remove(gameId);
             userRepository.save(user);
         }
     }
 
-    public List<Game> getFavoriteGamesForUser(String userId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
-        if(user.getFavoriteGames() != null) {
+    public List<Game> getFavoriteGamesForUser(String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        if (user.getFavoriteGames() != null) {
             return gameRepository.findAllById(user.getFavoriteGames());
         }
         return new ArrayList<>();

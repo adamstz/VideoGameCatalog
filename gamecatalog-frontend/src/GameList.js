@@ -1,18 +1,62 @@
 import React, { useEffect, useState, onGameUpdate} from 'react';
-import GameService from './GameService';
 import Modal from 'react-modal';
 import "./GameList.css";
 import 'bootstrap/dist/css/bootstrap.min.css';
-
+import GameService from './GameService';
 Modal.setAppElement('#root')
 
-function GameList({ searchTerm, sortType, games, onGameUpdate}) {
+function GameList({ searchTerm, sortType,games = [], setGames, onGameUpdate, loggedInUser, showOnlyFavorites }) {
+ 
   //const [games, setGames] = useState([]);
   const [modalIsOpen,setIsOpen] = useState(false);
   const [currentGame, setCurrentGame] = useState(null);
   const [newRating, setNewRating] = useState("");
   const [newNotes, setNewNotes] = useState("");
+  const [favorites, setFavorites] = useState([]);
 
+  const toggleFavorite = (e, gameId) => {
+    e.stopPropagation(); // Prevent triggering the game's onClick
+
+    if (favorites.includes(gameId)) {
+      removeFavorite(gameId);
+    } else {
+      addFavorite(gameId);
+    }
+  };
+  
+  useEffect(() => {
+    if (showOnlyFavorites) {
+        GameService.getFavorite().then((response) => {
+            setGames(response);
+        });
+    } else {
+        GameService.getAllGames().then((response) => {
+            setGames(response);
+        });
+    }
+    
+}, [showOnlyFavorites]);
+
+
+  const addFavorite = (gameId) => {
+    GameService.addFavorite(gameId)
+      .then(() => {
+        setFavorites([...favorites, gameId]);
+      })
+      .catch(error => {
+        console.error("Failed to add favorite:", error);
+      });
+  }
+
+  const removeFavorite = (gameId) => {
+    GameService.removeFavorite(gameId)
+      .then(() => {
+        setFavorites(favorites.filter(id => id !== gameId));
+      })
+      .catch(error => {
+        console.error("Failed to remove favorite:", error);
+      });
+  }
   function openModal(game) {
     setCurrentGame(game);
     setIsOpen(true);
@@ -63,7 +107,17 @@ function GameList({ searchTerm, sortType, games, onGameUpdate}) {
           className="game-image"
            
         />
-        <h2>{game.title}</h2>
+       <h2>
+  {game.title} 
+  {loggedInUser && (
+    <span 
+      className={favorites.includes(game.id) ? "star favorited" : "star"}
+      onClick={(e) => toggleFavorite(e, game.id)}
+    >
+      ★
+    </span>
+  )}
+</h2>
         <p>Genre: {game.genre}</p>
         <p>Developer: {game.developer}</p>
         <p>Rating: {game.rating}</p>

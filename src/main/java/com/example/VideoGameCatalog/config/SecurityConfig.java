@@ -32,8 +32,8 @@ public class SecurityConfig {
         http.cors(cors-> corsConfigurationSource()).csrf(csrf->csrf.disable())
 
                 .authorizeHttpRequests((authz) -> authz
-                        .requestMatchers("/authenticate").permitAll()  // Allow unauthenticated access to the authentication endpoint
-                        .requestMatchers("/favorites/**").authenticated()  // Require authentication for any URL starting with /favorites/
+                        //.requestMatchers("/authenticate").permitAll()  // Allow unauthenticated access to the authentication endpoint
+                        .requestMatchers("/api/user/**").authenticated()  // Require authentication for any URL starting with
                         .anyRequest().permitAll()  // All other URLs are accessible without authentication
                 )
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

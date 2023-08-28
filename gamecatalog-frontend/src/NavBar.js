@@ -5,41 +5,22 @@ import Modal from 'react-modal';
 import AuthService from './AuthService';
 
 
-async function fetchCurrentUser() {
-  const token = localStorage.getItem('token'); // Assuming you store the JWT token in local storage
-  const response = await fetch('/api/user/current', {
-      headers: {
-          'Authorization': `Bearer ${token}`
-      }
-  });
-  if (response.ok) {
-      const user = await response.json();
-      // Now you have the user details
-      console.log(user);
-  } else {
-      console.error('Failed to fetch user details');
-  }
-}
 
-function NavigationBar({ onSearch, onSort, onAddGame }) {
+function NavBar({ onSearch, onSort, onAddGame, loggedInUser, onUserLogin, onToggleFavorites}) {
 
   const [searchTerm, setSearchTerm] = useState('');
   const [sortTerm, setSortTerm] = useState('');
   const [signInModalIsOpen, setSignInModalIsOpen] = useState(false);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [loggedInUser, setLoggedInUser] = useState(null);
+  const [showFavorites, setShowFavorites] = useState(false);
 
   
-  useEffect(() => {
-    async function getCurrentUser() {
-        const username = await AuthService.fetchCurrentUser();
-        if (username) {
-            setLoggedInUser(username);
-        }
-    }
-    getCurrentUser();
-}, []);
+  const handleFavoritesToggle = (e) => {
+    setShowFavorites(e.target.checked);
+    onToggleFavorites(e.target.checked); // Notify parent component
+  };
+
 
   const handleSearch = (e) => {
     setSearchTerm(e.target.value);
@@ -62,7 +43,7 @@ function NavigationBar({ onSearch, onSort, onAddGame }) {
     e.preventDefault();
     const data = await AuthService.login(username, password);
     if (data && data.token) {
-        setLoggedInUser(username);
+        onUserLogin(username);
         closeSignInModal();
     } else {
         console.error("Failed to login");
@@ -70,7 +51,7 @@ function NavigationBar({ onSearch, onSort, onAddGame }) {
 };
 const handleLogout = () => {
   AuthService.logout();  // Assuming you have a logout function in your AuthService
-  setLoggedInUser(null);
+  onUserLogin(null);
 };
 
   return (
@@ -106,7 +87,17 @@ const handleLogout = () => {
           </div>
           
         </Form>
-        
+        {loggedInUser && (
+              <div className="ml-3 d-flex align-items-center">
+                <input 
+                  type="checkbox" 
+                  id="favoritesCheckbox" 
+                  checked={showFavorites} 
+                  onChange={handleFavoritesToggle}
+                />
+                <label htmlFor="favoritesCheckbox" className="ml-2">Favorites</label>
+              </div>
+            )}
         {loggedInUser ? (
     <div>
         <span>Welcome, {loggedInUser}!</span>
@@ -180,4 +171,4 @@ const handleLogout = () => {
   );
 }
 
-export default NavigationBar;
+export default NavBar;
