@@ -96,10 +96,11 @@ function App() {
     };
     GameService.createGame(newGame).then(() => {
       GameService.getAllGames().then((response) => {
-        setGames(response.data);
+        
+        setGames(response);
       });
       closeNewGameModal();
-    });
+    })
   };
   const handleGameUpdate = () => {
     GameService.getAllGames().then((response) => {
